@@ -31,13 +31,17 @@ class App extends Component {
     box: {}
   }
 
-  // we need this function to calculate the width and height of points
+  // calculate location of face on img
   calculateFaceLocation = data => {
     const clarifaiFace =
+      // grab face location points from Clarifai
       data.outputs[0].data.regions[0].region_info.bounding_box
+    // grab the image from FaceRecognition.js (img src is from "imageUrl" state)
     const image = document.getElementById('imageInput')
+    // get width and height of image
     const width = Number(image.width)
     const height = Number(image.height)
+    // take %-values from Clarifai and save them as keys in object
     return {
       leftCol: clarifaiFace.left_col * width,
       topRow: clarifaiFace.top_row * height,
@@ -47,13 +51,16 @@ class App extends Component {
   }
 
   onInputChange = event => {
+    // change empty input to user URL
     this.setState({ input: event.target.value })
   }
 
   onButtonSubmit = () => {
+    // take updated input state and save as imageUrl
     this.setState({ imageUrl: this.state.input })
     app.models
       .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      // take complete Clarifai response and calc face locations
       .then(response => this.calculateFaceLocation(response))
       .catch(err => console.log(err))
   }
@@ -66,10 +73,15 @@ class App extends Component {
         <Logo />
         <Rank />
         <ImageLinkForm
+          // pass event.target.value as props so it listens for input change
           onInputChange={this.onInputChange}
+          // pass predict function as props so it listens for button click
           onButtonSubmit={this.onButtonSubmit}
         />
-        <FaceRecognition imageUrl={this.state.imageUrl} />
+        <FaceRecognition
+          // pass imageUrl src as props to component that displays img
+          imageUrl={this.state.imageUrl}
+        />
       </div>
     )
   }
