@@ -50,6 +50,11 @@ class App extends Component {
     }
   }
 
+  displayFaceBox = box => {
+    console.log(box)
+    this.setState({ box: box })
+  }
+
   onInputChange = event => {
     // change empty input to user URL
     this.setState({ input: event.target.value })
@@ -61,7 +66,9 @@ class App extends Component {
     app.models
       .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
       // take complete Clarifai response and calc face locations
-      .then(response => this.calculateFaceLocation(response))
+      .then(response =>
+        this.displayFaceBox(this.calculateFaceLocation(response))
+      )
       .catch(err => console.log(err))
   }
 
@@ -81,6 +88,7 @@ class App extends Component {
         <FaceRecognition
           // pass imageUrl src as props to component that displays img
           imageUrl={this.state.imageUrl}
+          box={this.state.box}
         />
       </div>
     )
