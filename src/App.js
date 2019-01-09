@@ -5,6 +5,7 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import Rank from './components/Rank/Rank'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import SignIn from './components/SignIn/SignIn'
+import Register from './components/Register/Register'
 import Particles from 'react-particles-js'
 import Clarifai from 'clarifai'
 import './App.css'
@@ -29,7 +30,9 @@ class App extends Component {
   state = {
     input: '',
     imageUrl: '',
-    box: {}
+    box: {},
+    route: 'signin',
+    isSignedIn: false
   }
 
   // calculate location of face on img
@@ -73,25 +76,48 @@ class App extends Component {
       .catch(err => console.log(err))
   }
 
+  onRouteChange = route => {
+    // change route according to parameters (run func in components)
+    this.setState({ route: route })
+
+    if (route === 'signout') {
+      this.setState({ isSignedIn: false })
+    } else if (route === 'home') {
+      this.setState({ isSignedIn: true })
+    }
+  }
+
   render() {
+    const { isSignedIn, imageUrl, route, box } = this.state
     return (
       <div className="App">
         <Particles className="particles" params={particlesOptions} />
-        <Navigation />
-        <SignIn />
-        <Logo />
-        <Rank />
-        <ImageLinkForm
-          // pass event.target.value as props so it listens for input change
-          onInputChange={this.onInputChange}
-          // pass predict function as props so it listens for button click
-          onButtonSubmit={this.onButtonSubmit}
+        <Navigation
+          onRouteChange={this.onRouteChange}
+          isSignedIn={isSignedIn}
         />
-        <FaceRecognition
-          // pass imageUrl src as props to component that displays img
-          imageUrl={this.state.imageUrl}
-          box={this.state.box}
-        />
+        {route === 'home' ? (
+          <div>
+            <Logo />
+            <Rank />
+            <ImageLinkForm
+              // pass event.target.value as props so it listens for input change
+              onInputChange={this.onInputChange}
+              // pass predict function as props so it listens for button click
+              onButtonSubmit={this.onButtonSubmit}
+            />
+            <FaceRecognition
+              // pass imageUrl src as props to component that displays img
+              imageUrl={imageUrl}
+              box={box}
+            />
+          </div>
+        ) : route === 'signin' ? (
+          // if signin is true in state then show <Signin> component. Otherwise show homepage
+          <SignIn onRouteChange={this.onRouteChange} />
+        ) : (
+          <Register onRouteChange={this.onRouteChange} />
+        )}
       </div>
     )
   }
