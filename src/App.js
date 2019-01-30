@@ -88,7 +88,7 @@ class App extends Component {
 
   render() {
     const { isSignedIn, imageUrl, route, box } = this.state
-    const { onRouteChange } = this
+    const { onRouteChange, onInputChange, onButtonSubmit } = this
     return (
       <div className="App">
         <Particles className="particles" params={particlesOptions} />
@@ -99,9 +99,9 @@ class App extends Component {
             <Rank />
             <ImageLinkForm
               // pass event.target.value as props so it listens for input change
-              onInputChange={this.onInputChange}
+              onInputChange={onInputChange}
               // pass predict function as props so it listens for button click
-              onButtonSubmit={this.onButtonSubmit}
+              onButtonSubmit={onButtonSubmit}
             />
             <FaceRecognition
               // pass imageUrl src as props to component that displays img
@@ -111,9 +111,9 @@ class App extends Component {
           </div>
         ) : route === 'signin' ? (
           // if signin is true in state then show <Signin> component. Otherwise show homepage
-          <SignIn onRouteChange={this.onRouteChange} />
+          <SignIn onRouteChange={onRouteChange} />
         ) : (
-          <Register onRouteChange={this.onRouteChange} />
+          <Register onRouteChange={onRouteChange} />
         )}
       </div>
     )
