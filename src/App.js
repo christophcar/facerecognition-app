@@ -27,6 +27,7 @@ const particlesOptions = {
 }
 
 class App extends Component {
+  // box will have top, left, bottom, right prop therefore object needed
   state = {
     input: '',
     imageUrl: '',
